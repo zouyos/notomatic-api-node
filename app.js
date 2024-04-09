@@ -1,10 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const noteRoutes = require("./routes/note");
 
 mongoose
-  .connect("mongodb+srv://zouyos:Aouvoa1b@cluster0.4zx65dt.mongodb.net/")
+  .connect(process.env.DATABASE_URL)
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
