@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const noteRoutes = require("./routes/note");
+const userRoutes = require("./routes/user");
 
 mongoose
   .connect(process.env.DATABASE_URL)
@@ -27,5 +28,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/notes", noteRoutes);
+app.use("api/auth", userRoutes);
 
 module.exports = app;
