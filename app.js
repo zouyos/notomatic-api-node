@@ -27,7 +27,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/notes", noteRoutes);
-app.use("api/auth", userRoutes);
+app.use("/api/note", noteRoutes);
+app.use("/api/auth", userRoutes);
 
 module.exports = app;
