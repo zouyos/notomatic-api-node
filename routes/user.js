@@ -7,10 +7,7 @@ const { body } = require("express-validator");
 const validate = require("../middleware/validation");
 
 const validationRules = [
-  body("email")
-    .isEmail()
-    .normalizeEmail()
-    .withMessage("Incorrect email format"),
+  body("email").isEmail().withMessage("Incorrect email format"),
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password too short (min 6 characters)")

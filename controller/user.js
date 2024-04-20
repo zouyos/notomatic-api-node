@@ -31,12 +31,23 @@ exports.login = (req, res, next) => {
               .status(401)
               .json({ message: "Incorrect email or password" });
           }
-          res.status(200).json({
-            userId: user._id,
-            token: jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, {
+          const token = jwt.sign(
+            { userId: user.id },
+            process.env.TOKEN_SECRET,
+            {
               expiresIn: "24h",
-            }),
-          });
+            }
+          );
+          res
+            .status(200)
+            .cookie("token", token, {
+              sameSite: "None",
+              secure: true,
+              // httpOnly:
+            })
+            .json({
+              message: "Login successful",
+            });
         })
         .catch((error) => res.status(500).json({ error }));
     })
