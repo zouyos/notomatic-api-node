@@ -5,8 +5,10 @@ require("dotenv").config();
 const noteRoutes = require("./routes/note");
 const userRoutes = require("./routes/user");
 
+const dbUrl = `mongodb+srv://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_URL}`;
+
 mongoose
-  .connect(process.env.DATABASE_URL)
+  .connect(dbUrl)
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 

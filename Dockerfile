@@ -16,8 +16,10 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 3200
 
-ENV FRONT_END_DOMAIN "https://localhost:3000/"
-ENV DATABASE_URL "To be defined"
+ENV FRONT_END_DOMAIN "https://notomatic-front.vercel.app/"
+ENV DATABASE_URL "cluster0.4zx65dt.mongodb.net/notomatic"
+ENV DATABASE_USERNAME "To be defined"
+ENV DATABASE_PASSWORD "To be defined"
 ENV TOKEN_SECRET "To be defined"
 
 # Command to run the application
