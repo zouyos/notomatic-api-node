@@ -46,7 +46,7 @@ exports.updateById = (req, res, next) => {
 
       Note.updateOne(
         { _id: req.params.id },
-        { ...noteObject, _id: req.params.id }
+        { ...noteObject, _id: req.params.id, userId: req.auth.userId }
       )
         .then(() => {
           Note.findOne({ _id: req.params.id })
