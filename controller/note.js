@@ -1,4 +1,4 @@
-const Note = require("../model/Note");
+const Note = require('../model/Note');
 
 exports.create = (req, res, next) => {
   const noteObject = { ...req.body };
@@ -6,7 +6,7 @@ exports.create = (req, res, next) => {
   delete noteObject.userId;
   const note = new Note({
     ...req.body,
-    _userId: req.auth.userId,
+    userId: req.auth.userId,
   });
   note
     .save()
@@ -24,7 +24,7 @@ exports.getById = (req, res, next) => {
   Note.findOne({ _id: req.params.id })
     .then((note) => {
       if (note.userId != req.auth.userId) {
-        res.status(401).json({ message: "Unauthorized" });
+        res.status(401).json({ message: 'Unauthorized' });
       }
       res.status(200).json(note);
     })
@@ -38,10 +38,10 @@ exports.updateById = (req, res, next) => {
   Note.findOne({ _id: req.params.id })
     .then((note) => {
       if (!note) {
-        return res.status(404).json({ message: "Note not found" });
+        return res.status(404).json({ message: 'Note not found' });
       }
       if (note.userId !== req.auth.userId) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: 'Unauthorized' });
       }
 
       Note.updateOne(
@@ -64,11 +64,11 @@ exports.deleteById = (req, res, next) => {
   Note.findOne({ _id: req.params.id })
     .then((note) => {
       if (note.userId != req.auth.userId) {
-        res.status(401).json({ message: "Unauthorized" });
+        res.status(401).json({ message: 'Unauthorized' });
       }
       Note.deleteOne({ _id: req.params.id })
         .then(() => {
-          res.status(200).json({ message: "Note deleted" });
+          res.status(200).json({ message: 'Note deleted' });
         })
         .catch((error) => res.status(401).json({ error }));
     })
