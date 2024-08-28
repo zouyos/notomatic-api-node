@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
 require('dotenv').config();
 
 const User = require('../model/User');
@@ -50,6 +53,82 @@ exports.login = (req, res, next) => {
               message: 'Login successful',
             });
         })
+        .catch((error) => res.status(500).json({ error }));
+    })
+    .catch((error) => res.status(500).json({ error }));
+};
+
+exports.requestPasswordReset = (req, res, next) => {
+  const { email } = req.body;
+
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const token = crypto.randomBytes(20).toString('hex');
+
+      user.resetPasswordToken = token;
+      user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+      return user.save().then(() => token); // Ensure token is returned for the next then block
+    })
+    .then((token) => {
+      const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const mailOptions = {
+        to: req.body.email, // use req.body.email here, or user.email if you want to use the saved email
+        from: process.env.EMAIL_USER,
+        subject: 'Password Reset',
+        text: `You are receiving this because you have requested the reset of the password for your account.\n\n
+               Please click on the following link, or paste this into your browser to complete the process:\n\n
+               https://${process.env.FRONT_END_DOMAIN}/reset/${token}\n\n
+               If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+      };
+
+      return transporter.sendMail(mailOptions);
+    })
+    .then(() => res.status(200).json({ message: 'Password reset link sent' }))
+    .catch((error) => {
+      console.error('Error sending email:', error); // Log the error
+      res.status(500).json({ error: 'Error sending email' });
+    });
+};
+
+exports.resetPassword = (req, res, next) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() },
+  })
+    .then((user) => {
+      if (!user) {
+        return res
+          .status(400)
+          .json({ message: 'Password reset token is invalid or has expired' });
+      }
+
+      bcrypt
+        .hash(password, 10)
+        .then((hash) => {
+          user.password = hash;
+          user.resetPasswordToken = undefined;
+          user.resetPasswordExpires = undefined;
+
+          return user.save();
+        })
+        .then(() =>
+          res.status(200).json({ message: 'Password has been reset' })
+        )
         .catch((error) => res.status(500).json({ error }));
     })
     .catch((error) => res.status(500).json({ error }));
