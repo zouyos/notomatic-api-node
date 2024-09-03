@@ -46,8 +46,8 @@ exports.login = (req, res, next) => {
             .cookie('token', token, {
               sameSite: 'None',
               secure: true,
-              partitioned: true,
-              // httpOnly:,
+              httpOnly: true,
+              // partitioned:,
             })
             .json({
               message: 'Login successful',
