@@ -46,7 +46,7 @@ exports.login = (req, res, next) => {
             .cookie('token', token, {
               sameSite: 'None',
               secure: true,
-              httpOnly: true,
+              // httpOnly: true,
               // partitioned:,
             })
             .json({
