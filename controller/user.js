@@ -46,7 +46,7 @@ exports.login = (req, res, next) => {
             .cookie('token', token, {
               sameSite: 'None',
               secure: true,
-              // httpOnly: true,
+              httpOnly: true,
               // partitioned:,
             })
             .json({
@@ -70,9 +70,9 @@ exports.requestPasswordReset = (req, res, next) => {
       const token = crypto.randomBytes(20).toString('hex');
 
       user.resetPasswordToken = token;
-      user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+      user.resetPasswordExpires = Date.now() + 3600000;
 
-      return user.save().then(() => token); // Ensure token is returned for the next then block
+      return user.save().then(() => token);
     })
     .then((token) => {
       const transporter = nodemailer.createTransport({
@@ -84,7 +84,7 @@ exports.requestPasswordReset = (req, res, next) => {
       });
 
       const mailOptions = {
-        to: req.body.email, // use req.body.email here, or user.email if you want to use the saved email
+        to: req.body.email,
         from: process.env.EMAIL_USER,
         subject: 'Password Reset',
         text: `You are receiving this because you have requested the reset of the password for your account.\n\n
