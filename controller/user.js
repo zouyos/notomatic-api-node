@@ -47,7 +47,7 @@ exports.login = (req, res, next) => {
               sameSite: 'none',
               secure: true,
               httpOnly: true,
-              // partitioned:,
+              partitioned: true,
             })
             .json({
               message: 'Login successful',
