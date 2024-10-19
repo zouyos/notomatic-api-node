@@ -44,7 +44,7 @@ exports.login = (req, res, next) => {
           res
             .status(200)
             .cookie('token', token, {
-              sameSite: 'none',
+              sameSite: 'None',
               secure: true,
               httpOnly: true,
               partitioned: true,
