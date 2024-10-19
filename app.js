@@ -16,15 +16,6 @@ const app = express();
 
 app.use(express.json());
 
-const cors = require('cors');
-
-app.use(
-  cors({
-    origin: process.env.FRONT_END_DOMAIN,
-    credentials: true,
-  })
-);
-
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', process.env.FRONT_END_DOMAIN);
   res.setHeader(

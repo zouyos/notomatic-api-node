@@ -47,7 +47,7 @@ exports.login = (req, res, next) => {
               sameSite: 'None',
               secure: true,
               httpOnly: true,
-              // partitioned: true,
+              partitioned: true,
               path: '/',
             })
             .json({
