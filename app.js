@@ -16,6 +16,10 @@ const app = express();
 
 app.use(express.json());
 
+app.options('*', (req, res) => {
+  res.sendStatus(200);
+});
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', process.env.FRONT_END_DOMAIN);
   res.setHeader(
