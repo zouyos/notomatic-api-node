@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const Note = require('../model/Note');
 
-const secretKey = 'your-secret-key'; // Replace with a secure key
+const secretKey = process.env.ENCRYPTION_KEY;
 const algorithm = 'aes-256-ctr';
 
 function encryptContent(content) {
@@ -37,7 +37,8 @@ exports.create = async (req, res, next) => {
     savedNote.content = decryptContent(savedNote.content);
     res.status(201).json(savedNote);
   } catch (err) {
-    res.status(400).json({ err });
+    console.error('ERREUR CREATION NOTE :', err);
+    res.status(400).json({ error: err.message });
   }
 };
 
@@ -98,7 +99,7 @@ exports.updateById = async (req, res, next) => {
         content: encryptedContent,
         _id: req.params.id,
         userId: req.auth.userId,
-      }
+      },
     );
 
     const updatedNote = await Note.findOne({ _id: req.params.id });

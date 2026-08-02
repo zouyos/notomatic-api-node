@@ -39,7 +39,7 @@ exports.login = (req, res, next) => {
             process.env.TOKEN_SECRET,
             {
               expiresIn: '24h',
-            }
+            },
           );
           res
             .status(200)
@@ -96,7 +96,7 @@ exports.requestPasswordReset = (req, res, next) => {
     })
     .then(() => res.status(200).json({ message: 'Password reset link sent' }))
     .catch((error) => {
-      console.error('Error sending email:', error); // Log the error
+      console.error('Error sending email:', error);
       res.status(500).json({ error: 'Error sending email' });
     });
 };
@@ -126,7 +126,7 @@ exports.resetPassword = (req, res, next) => {
           return user.save();
         })
         .then(() =>
-          res.status(200).json({ message: 'Password has been reset' })
+          res.status(200).json({ message: 'Password has been reset' }),
         )
         .catch((error) => res.status(500).json({ error }));
     })
