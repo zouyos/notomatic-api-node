@@ -1,21 +1,40 @@
 const crypto = require('crypto');
 const Note = require('../model/Note');
 
-const secretKey = process.env.ENCRYPTION_KEY;
 const algorithm = 'aes-256-ctr';
 
+const secretKey = crypto
+  .createHash('sha256')
+  .update(process.env.ENCRYPTION_KEY)
+  .digest();
+
 function encryptContent(content) {
-  const cipher = crypto.createCipher(algorithm, secretKey);
-  let encrypted = cipher.update(content, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return encrypted;
+  const iv = crypto.randomBytes(16);
+
+  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+
+  const encrypted = Buffer.concat([
+    cipher.update(content, 'utf8'),
+    cipher.final(),
+  ]);
+
+  return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
 function decryptContent(content) {
-  const decipher = crypto.createDecipher(algorithm, secretKey);
-  let decrypted = decipher.update(content, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-  return decrypted;
+  const [ivHex, encryptedHex] = content.split(':');
+
+  const iv = Buffer.from(ivHex, 'hex');
+  const encryptedText = Buffer.from(encryptedHex, 'hex');
+
+  const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);
+
+  const decrypted = Buffer.concat([
+    decipher.update(encryptedText),
+    decipher.final(),
+  ]);
+
+  return decrypted.toString('utf8');
 }
 
 exports.create = async (req, res, next) => {
