@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 
 const noteRoutes = require('./routes/note');
@@ -17,35 +18,14 @@ mongoose
 
 const app = express();
 
+app.use(
+  cors({
+    origin: process.env.FRONT_END_DOMAIN,
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
-
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', process.env.FRONT_END_DOMAIN);
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization',
-  );
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-  );
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  next();
-});
-
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', process.env.FRONT_END_DOMAIN);
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization',
-  );
-  res.header(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-  );
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.sendStatus(200);
-});
 
 app.use('/api/note', noteRoutes);
 app.use('/api/auth', userRoutes);
