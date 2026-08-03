@@ -3,6 +3,9 @@ const Note = require('../model/Note');
 
 const algorithm = 'aes-256-ctr';
 
+console.log('ENCRYPTION_KEY =', process.env.ENCRYPTION_KEY);
+console.log('Toutes les variables :', Object.keys(process.env));
+
 const secretKey = crypto
   .createHash('sha256')
   .update(process.env.ENCRYPTION_KEY)
