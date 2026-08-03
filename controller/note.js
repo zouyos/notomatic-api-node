@@ -3,9 +3,6 @@ const Note = require('../model/Note');
 
 const algorithm = 'aes-256-ctr';
 
-console.log('ENCRYPTION_KEY =', process.env.ENCRYPTION_KEY);
-console.log('Toutes les variables :', Object.keys(process.env));
-
 const secretKey = crypto
   .createHash('sha256')
   .update(process.env.ENCRYPTION_KEY)
@@ -59,7 +56,7 @@ exports.create = async (req, res, next) => {
     savedNote.content = decryptContent(savedNote.content);
     res.status(201).json(savedNote);
   } catch (err) {
-    console.error('ERREUR CREATION NOTE :', err);
+    console.error('Error creating note:', err);
     res.status(400).json({ error: err.message });
   }
 };
