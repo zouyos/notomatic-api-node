@@ -1,15 +1,8 @@
 // const dns = require('dns');
 // dns.setServers(['8.8.8.8', '8.8.4.4']);
 
-console.log('1 - Début index');
-
 const http = require('http');
-
-console.log('2 - Après require http');
-
 const app = require('./app');
-
-console.log('3 - Après require app');
 
 const normalizePort = (val) => {
   const port = parseInt(val, 10);
@@ -24,8 +17,6 @@ const normalizePort = (val) => {
 };
 const port = normalizePort(process.env.PORT || '3200');
 app.set('port', port);
-
-console.log('4 - Après normalizePort');
 
 const errorHandler = (error) => {
   if (error.syscall !== 'listen') {
@@ -50,10 +41,11 @@ const errorHandler = (error) => {
 
 const server = http.createServer(app);
 
-console.log('5 - Après createServer');
-
 server.on('error', errorHandler);
-
-server.listen(port, () => {
-  console.log('6 - Serveur démarré');
+server.on('listening', () => {
+  const address = server.address();
+  const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
+  console.log('Listening on ' + bind);
 });
+
+server.listen(port);
